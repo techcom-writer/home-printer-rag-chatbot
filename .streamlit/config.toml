@@ -2,16 +2,24 @@
 # Allow embedding in iframes from different origins
 showErrorDetails = true
 toolbarMode = "minimal"
+showSidebarNavigation = false
 
 [server]
-# Allow embedding
+# Allow embedding and CORS
 allowRunOnSave = true
 enableXsrfProtection = false
+enableCORS = true
+
+# Allow all origins for iframe embedding (or specify your domain)
+# Can be made more restrictive: ["https://yourdomain.com"]
+maxUploadSize = 200
+headless = true
 
 [browser]
 # Disable gatherUsageStats to reduce redirects
 gatherUsageStats = false
+serverAddress = "home-printer-rag-chatbot-gaencarjwjpk6ccgdwwjwv.streamlit.app"
 
-# Improve CORS handling
 [logger]
 level = "info"
+messageFormat = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
