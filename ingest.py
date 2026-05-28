@@ -25,7 +25,7 @@ import argparse
 
 from dotenv import load_dotenv
 load_dotenv()
-
+PINECONE_INDEX = "home-printer-docs"
 # ============= CONFIGURATION =============
 DOCS_DIR = Path(__file__).parent.parent / "docs"
 HUGGINGFACE_API_KEY = os.environ.get("HUGGINGFACE_API_KEY")
@@ -104,36 +104,50 @@ def split_into_chunks(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CH
     
     return chunks
 
-def get_embeddings(texts: List[str]) -> List[List[float]]:
-    """Get embeddings from Hugging Face."""
-    if not HUGGINGFACE_API_KEY:
-        raise ValueError("HUGGINGFACE_API_KEY not set")
+# def get_embeddings(texts: List[str]) -> List[List[float]]:
+#     """Get embeddings from Hugging Face."""
+#     if not HUGGINGFACE_API_KEY:
+#         raise ValueError("HUGGINGFACE_API_KEY not set")
     
-    headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
-    embeddings = []
+#     headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
+#     embeddings = []
     
-    for text in tqdm(texts, desc="Generating embeddings"):
-        try:
-            response = requests.post(
-                HF_EMBED_URL,
-                headers=headers,
-                json={"inputs": text},
-                timeout=30
-            )
+#     for text in tqdm(texts, desc="Generating embeddings"):
+#         try:
+#             response = requests.post(
+#                 HF_EMBED_URL,
+#                 headers=headers,
+#                 json={"inputs": text},
+#                 timeout=30
+#             )
             
-            if response.status_code == 200:
-                embedding = response.json()
-                embeddings.append(embedding)
-                time.sleep(0.1)  # Rate limiting
-            else:
-                print(f"Error for text chunk: {response.status_code}")
-                embeddings.append([0] * 384)  # Default dimension for bge-small-en
+#             if response.status_code == 200:
+#                 embedding = response.json()
+#                 embeddings.append(embedding)
+#                 time.sleep(0.1)  # Rate limiting
+#             else:
+#                 print(f"Error for text chunk: {response.status_code}")
+#                 embeddings.append([0.0] * 384)  # Default dimension for bge-small-en
         
-        except Exception as e:
-            print(f"Error getting embedding: {e}")
-            embeddings.append([0] * 384)
+#         except Exception as e:
+#             print(f"Error getting embedding: {e}")
+#             embeddings.append([0.0] * 384)
     
-    return embeddings
+#     return embeddings
+
+from sentence_transformers import SentenceTransformer
+
+# Load model once globally
+embedding_model = SentenceTransformer("BAAI/bge-small-en-v1.5")
+
+
+def get_embeddings(texts):
+    """Generate embeddings locally."""
+    
+    embeddings = embedding_model.encode(texts)
+
+    return [embedding.tolist() for embedding in embeddings]
+
 
 def upload_to_pinecone(documents: Dict[str, str]) -> None:
     """Upload documents and embeddings to Pinecone."""
@@ -179,6 +193,28 @@ def upload_to_pinecone(documents: Dict[str, str]) -> None:
     print(f"\nSuccessfully uploaded {len(vectors)} vectors to Pinecone")
     print(f"Index: {PINECONE_INDEX}")
 
+        
+    pc = Pinecone(api_key=PINECONE_API_KEY)
+
+    try:
+        index = pc.Index(PINECONE_INDEX)
+
+        print(f"Connected to Pinecone index: {PINECONE_INDEX}")
+
+        # DEBUG INDEX STATS
+        stats = index.describe_index_stats()
+
+        print("\n===== INDEX STATS =====")
+        print(stats)
+        print("=======================\n")
+
+    except Exception as e:
+        print(f"Error connecting to index: {e}")
+        return
+
+
+
+    
 # ============= MAIN =============
 
 def main():

@@ -30,8 +30,8 @@ PINECONE_INDEX = st.secrets.get("PINECONE_INDEX", "home-printer-docs")
 HUGGINGFACE_API_KEY = st.secrets.get("HUGGINGFACE_API_KEY", os.environ.get("HUGGINGFACE_API_KEY"))
 
 # Hugging Face Embedding Model
-EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
-HF_EMBED_URL = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{EMBEDDING_MODEL}"
+# EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
+# HF_EMBED_URL = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{EMBEDDING_MODEL}"
 
 # ============= HELPER FUNCTIONS =============
 
