@@ -1,0 +1,17 @@
+[client]
+# Allow embedding in iframes from different origins
+showErrorDetails = true
+toolbarMode = "minimal"
+
+[server]
+# Allow embedding
+allowRunOnSave = true
+enableXsrfProtection = false
+
+[browser]
+# Disable gatherUsageStats to reduce redirects
+gatherUsageStats = false
+
+# Improve CORS handling
+[logger]
+level = "info"
