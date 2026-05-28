@@ -16,5 +16,5 @@ pydantic==2.7.4
 
 # Optional: for advanced features
 langchain==0.1.20
-langchain-groq==0.0.9
+langchain-groq==0.1.9
 langchain-pinecone==0.1.2
