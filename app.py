@@ -1,11 +1,12 @@
 import streamlit as st
 from groq import Groq
-import pinecone
+# import pinecone
 from pinecone import Pinecone
-import requests
+# import requests
 import os
 from typing import Optional
 import json
+from sentence_transformers import SentenceTransformer
 
 # Configure Streamlit
 st.set_page_config(
@@ -31,24 +32,30 @@ PINECONE_INDEX = st.secrets.get("PINECONE_INDEX", "home-printer-docs")
 
 # Hugging Face Embedding Model
 EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
+@st.cache_resource
+def load_embedding_model():
+    return SentenceTransformer(EMBEDDING_MODEL)
+
+embedding_model = load_embedding_model()
+
+
 # HF_EMBED_URL = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{EMBEDDING_MODEL}"
 
 # ============= HELPER FUNCTIONS =============
 
 def get_embedding(text: str) -> Optional[list]:
-    """Get embeddings from Hugging Face."""
-    headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
-    response = requests.post(
-        HF_EMBED_URL,
-        headers=headers,
-        json={"inputs": text},
-        timeout=30
-    )
-    if response.status_code == 200:
-        return response.json()
-    else:
-        st.error(f"Embedding error: {response.text}")
+    """Generate embeddings locally."""
+
+    try:
+        embedding = embedding_model.encode(text)
+
+        return embedding.tolist()
+
+    except Exception as e:
+        st.error(f"Embedding error: {str(e)}")
+
         return None
+
 
 def retrieve_context(query: str, top_k: int = 3) -> str:
     """Retrieve relevant context from Pinecone."""
@@ -165,8 +172,7 @@ with st.sidebar:
     This chatbot uses:
     - **Groq**: Fast LLM inference
     - **Pinecone**: Vector database for documentation
-    - **Hugging Face**: Embeddings
-    
+    - **SentenceTransformers**: Local embeddings    
     It retrieves relevant documentation and generates accurate, context-aware answers.
     """)
     
