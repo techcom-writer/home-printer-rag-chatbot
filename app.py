@@ -27,10 +27,10 @@ st.markdown("""
 GROQ_API_KEY = st.secrets.get("GROQ_API_KEY", os.environ.get("GROQ_API_KEY"))
 PINECONE_API_KEY = st.secrets.get("PINECONE_API_KEY", os.environ.get("PINECONE_API_KEY"))
 PINECONE_INDEX = st.secrets.get("PINECONE_INDEX", "home-printer-docs")
-HUGGINGFACE_API_KEY = st.secrets.get("HUGGINGFACE_API_KEY", os.environ.get("HUGGINGFACE_API_KEY"))
+# HUGGINGFACE_API_KEY = st.secrets.get("HUGGINGFACE_API_KEY", os.environ.get("HUGGINGFACE_API_KEY"))
 
 # Hugging Face Embedding Model
-# EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
+EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
 # HF_EMBED_URL = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{EMBEDDING_MODEL}"
 
 # ============= HELPER FUNCTIONS =============

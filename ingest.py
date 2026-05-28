@@ -28,11 +28,11 @@ load_dotenv()
 PINECONE_INDEX = "home-printer-docs"
 # ============= CONFIGURATION =============
 DOCS_DIR = Path(__file__).parent.parent / "docs"
-HUGGINGFACE_API_KEY = os.environ.get("HUGGINGFACE_API_KEY")
+# HUGGINGFACE_API_KEY = os.environ.get("HUGGINGFACE_API_KEY")
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
 PINECONE_INDEX = os.environ.get("PINECONE_INDEX", "home-printer-docs")
 EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
-HF_EMBED_URL = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{EMBEDDING_MODEL}"
+# HF_EMBED_URL = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{EMBEDDING_MODEL}"
 
 # Chunk size for splitting documents
 CHUNK_SIZE = 500  # tokens (approximate)
