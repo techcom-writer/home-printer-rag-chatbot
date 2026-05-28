@@ -12,15 +12,37 @@ from sentence_transformers import SentenceTransformer
 st.set_page_config(
     page_title="Home Printer Documentation Bot",
     page_icon="🖨️",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# Hide Streamlit elements when embedded
+# Hide Streamlit elements and add mobile-responsive styles
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    
+    /* Mobile responsive design */
+    @media (max-width: 768px) {
+        .stTitle {font-size: 1.5rem !important;}
+        .stMarkdown {font-size: 0.95rem !important;}
+        .stChatMessage {padding: 0.5rem !important;}
+        .stChatInputContainer {padding: 0.5rem !important;}
+    }
+    
+    /* Chat message optimization */
+    .stChatMessage {word-wrap: break-word; overflow-wrap: break-word;}
+    
+    /* Input optimization */
+    .stChatInputContainer input {width: 100%; box-sizing: border-box;}
+    
+    /* Responsive container */
+    .stContainer {max-width: 100% !important; padding: 0.5rem !important;}
+    
+    @media (max-width: 600px) {
+        .stContainer {padding: 0.25rem !important;}
+        [data-testid="stSidebar"] {width: 100% !important;}
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -111,14 +133,15 @@ def generate_response(system_prompt: str, user_query: str) -> str:
 
 # ============= UI LAYOUT =============
 
-# Header
-col1, col2 = st.columns([0.1, 0.9])
-with col1:
-    st.markdown("🖨️")
-with col2:
-    st.title("Home Printer Documentation Bot")
+# Header - responsive design
+st.markdown("""
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+        <span style="font-size: 2rem;">🖨️</span>
+        <h1 style="margin: 0; flex: 1; min-width: 0; word-break: break-word;">Home Printer Documentation Bot</h1>
+    </div>
+    """, unsafe_allow_html=True)
 
-st.markdown("Ask questions about home printer setup, maintenance, and troubleshooting.")
+st.markdown("Ask questions about home printer setup, maintenance, and troubleshooting.", unsafe_allow_html=True)
 
 # Initialize session state for chat history
 if "messages" not in st.session_state:
@@ -169,26 +192,27 @@ is outside your knowledge base and suggest checking the full documentation."""
 with st.sidebar:
     st.subheader("📖 About This Bot")
     st.info("""
-    This chatbot uses:
-    - **Groq**: Fast LLM inference
-    - **Pinecone**: Vector database for documentation
-    - **SentenceTransformers**: Local embeddings    
-    It retrieves relevant documentation and generates accurate, context-aware answers.
+This chatbot uses:
+- **Groq**: Fast LLM inference
+- **Pinecone**: Vector database for documentation
+- **SentenceTransformers**: Local embeddings    
+
+It retrieves relevant documentation and generates accurate, context-aware answers.
     """)
     
     st.subheader("🔍 Sample Questions")
     st.markdown("""
-    - How do I install a home printer?
-    - What are the recommended print settings?
-    - How do I troubleshoot offline printer issues?
-    - How often should I maintain my printer?
-    - What causes poor print quality?
+- How do I install a home printer?
+- What are the recommended print settings?
+- How do I troubleshoot offline printer issues?
+- How often should I maintain my printer?
+- What causes poor print quality?
     """)
     
     st.subheader("📚 Full Documentation")
     st.markdown("""
-    For comprehensive guides, visit the full 
-    [Home Printer Documentation](https://your-username.github.io/home-printer-docs/)
+For comprehensive guides, visit the full 
+[Home Printer Documentation](https://your-username.github.io/home-printer-docs/)
     """)
     
     # Debug info (hidden in production)
@@ -197,3 +221,27 @@ with st.sidebar:
         st.subheader("🐛 Debug Info")
         st.caption(f"Pinecone Index: {PINECONE_INDEX}")
         st.caption(f"Embedding Model: {EMBEDDING_MODEL}")
+
+# Mobile-specific optimization
+st.markdown("""
+    <style>
+    @media (max-width: 640px) {
+        /* Optimize sidebar for mobile */
+        [data-testid="stSidebar"] {
+            position: absolute;
+            z-index: 999;
+        }
+        
+        /* Improve chat message readability */
+        .stChatMessage p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        /* Optimize input field */
+        .stChatInputContainer {
+            padding: 0.5rem 0 !important;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
